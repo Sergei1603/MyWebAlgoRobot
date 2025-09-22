@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "MarketRobot": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker",
+      "containerRunEnvironmentFiles": "secrets.env" // Добавьте эту строку
+    }
+  }
+}

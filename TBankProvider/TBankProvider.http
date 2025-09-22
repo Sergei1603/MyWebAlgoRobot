@@ -1,0 +1,6 @@
+@TBankProvider_HostAddress = http://localhost:5094
+
+GET {{TBankProvider_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

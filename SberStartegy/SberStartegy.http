@@ -1,0 +1,6 @@
+@SberStartegy_HostAddress = http://localhost:5261
+
+GET {{SberStartegy_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
