@@ -13,6 +13,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["MyWebAlgoRobot/MyWebAlgoRobot.csproj", "MyWebAlgoRobot/"]
+COPY ["MarketRobot/MarketRobot.csproj", "MarketRobot/"]
 RUN dotnet restore "./MyWebAlgoRobot/MyWebAlgoRobot.csproj"
 COPY . .
 WORKDIR "/src/MyWebAlgoRobot"

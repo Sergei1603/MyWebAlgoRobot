@@ -12,20 +12,19 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["SberStartegy/SberStartegy.csproj", "SberStartegy/"]
-COPY ["MarketRobot/MarketRobot.csproj", "MarketRobot/"]
-RUN dotnet restore "./SberStartegy/SberStartegy.csproj"
+COPY ["MyWebAlgoRobot/MyWebAlgoRobot.csproj", "MyWebAlgoRobot/"]
+RUN dotnet restore "./MyWebAlgoRobot/MyWebAlgoRobot.csproj"
 COPY . .
-WORKDIR "/src/SberStartegy"
-RUN dotnet build "./SberStartegy.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/MyWebAlgoRobot"
+RUN dotnet build "./MyWebAlgoRobot.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Этот этап используется для публикации проекта службы, который будет скопирован на последний этап
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./SberStartegy.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./MyWebAlgoRobot.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Этот этап используется в рабочей среде или при запуске из VS в обычном режиме (по умолчанию, когда конфигурация отладки не используется)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "SberStartegy.dll"]
+ENTRYPOINT ["dotnet", "MyWebAlgoRobot.dll"]

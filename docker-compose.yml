@@ -1,0 +1,34 @@
+services:
+  mywebalgorobot:
+    image: ${DOCKER_REGISTRY-}mywebalgorobot
+    build:
+      context: .
+      dockerfile: MyWebAlgoRobot/Dockerfile
+
+  telegrammbot:
+    image: ${DOCKER_REGISTRY-}telegrammbot
+    build:
+      context: .
+      dockerfile: TelegrammBot/Dockerfile
+
+
+  cnystrategy:
+    image: ${DOCKER_REGISTRY-}cnystrategy
+    build:
+      context: .
+      dockerfile: CNYStrategy/Dockerfile
+
+
+  sberstartegy:
+    image: ${DOCKER_REGISTRY-}sberstartegy
+    build:
+      context: .
+      dockerfile: SberStartegy/Dockerfile
+
+
+  tbankprovider:
+    image: ${DOCKER_REGISTRY-}tbankprovider
+    build:
+      context: .
+      dockerfile: TBankProvider/Dockerfile
+
