@@ -1,6 +1,5 @@
 ﻿using Google.Type;
 using MarketRobot.Sheduler.Jobs;
-using MarketRobot.Sheduler.Jobs.CN;
 using MarketRobot.Sheduler.Jobs.Sber;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;

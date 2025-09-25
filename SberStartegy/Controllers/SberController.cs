@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace SberStartegy.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("Sber/[Controller]")]
     public class SberController : ControllerBase
     {
         private readonly ILogger<SberController> _logger;
@@ -19,13 +19,13 @@ namespace SberStartegy.Controllers
         [HttpGet(Name = "Start")]
         public void Start()
         {
-            Sheduler.StartSber(_serviceProvider);
+            ShedulerTest.StartSber(_serviceProvider);
         }
 
-        [HttpGet(Name = "Start")]
+        [HttpGet(Name = "Stop")]
         public async void Stop()
         {
-            await Sheduler.ShutDown();
+            await ShedulerTest.ShutDown();
         }
     }
 }

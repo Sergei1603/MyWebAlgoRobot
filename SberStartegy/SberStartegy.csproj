@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MarketRobot\MarketRobot.csproj" />
+    <ProjectReference Include="..\..\Providers\Providers.csproj" />
   </ItemGroup>
 
 </Project>

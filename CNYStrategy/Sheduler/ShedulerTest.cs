@@ -1,7 +1,6 @@
 ﻿using Google.Type;
 using MarketRobot.Sheduler.Jobs;
 using MarketRobot.Sheduler.Jobs.CN;
-using MarketRobot.Sheduler.Jobs.Sber;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.Impl;
@@ -13,7 +12,7 @@ namespace MarketRobot.Sheduler
     {
         //Время здесь по UTC, потому что контейнер по умолчанию работает по UTC
         static protected IScheduler scheduler;
-        public static async void StartSber(IServiceProvider serviceProvider)
+        public static async void StartCNY(IServiceProvider serviceProvider)
         {
             try
             {
@@ -21,7 +20,7 @@ namespace MarketRobot.Sheduler
                 scheduler.JobFactory = serviceProvider.GetRequiredService<JobFactory>();
                 await scheduler.Start();
 
-                IJobDetail job1 = JobBuilder.Create<OpenPositionsSberJob>().Build();
+                IJobDetail job1 = JobBuilder.Create<OpenPositionsCNYJob>().Build();
 
                 ITrigger trigger1 = TriggerBuilder.Create()  // создаем триггер
               .WithIdentity("trigger1", "group1")     // идентифицируем триггер с именем и группой
@@ -31,12 +30,12 @@ namespace MarketRobot.Sheduler
                   .RepeatForever())                   // бесконечное повторение
               .Build();                               // создаем триггер
 
-                IJobDetail job2 = JobBuilder.Create<ClosePositionsSberJob>().Build();
+                IJobDetail job2 = JobBuilder.Create<ClosePositionsCNYJob>().Build();
 
                 ITrigger trigger2 = TriggerBuilder.Create()  // создаем триггер
                .WithIdentity("trigger2", "group1")     // идентифицируем триггер с именем и группой
                .StartAt(DateTimeOffset.Now.AddMinutes(2))                            // запуск сразу после начала выполнения
-            //   .StartNow()
+                                                                                     //   .StartNow()
                .WithSimpleSchedule(x => x            // настраиваем выполнение действия
                    .WithIntervalInMinutes(5)          // через 1 минуту
                    .RepeatForever())                   // бесконечное повторение
@@ -47,7 +46,7 @@ namespace MarketRobot.Sheduler
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ошибка в планировщике сбера: {ex}");
+                Console.WriteLine($"Ошибка в планировщике валюты: {ex}");
             }
         }
 

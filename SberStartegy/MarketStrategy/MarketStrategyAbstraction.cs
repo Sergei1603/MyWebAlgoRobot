@@ -8,7 +8,7 @@ namespace MarketRobot.Interface
     internal abstract class MarketStrategyAbstraction : IMarketStrategy
     {
         protected ITinkoffProvider _tinkoffProvider;
-        protected ILogger _logger;
+        protected IMyLogger _logger;
 
         protected string _basiсAktive; // SBER  CNY/RUB
         protected string _figi;
@@ -20,7 +20,7 @@ namespace MarketRobot.Interface
         {
             try
             {
-                _logger.LogWithTG("Попытка закрытия позиции");
+                _logger.LogWithTG("Попытка закрытия позиции", "Sber");
                 var pos = await _tinkoffProvider.GetPositions();
                 if (pos.Futures.Any())
                 {
@@ -28,13 +28,13 @@ namespace MarketRobot.Interface
                     await _tinkoffProvider.OpenPosition(_figi, futurePos.Balance < 0, Math.Abs(futurePos.Balance));
                     _isPositionOpen = false;
 
-                    _logger.LogWithTG("Позиция закрыта");
+                    _logger.LogWithTG("Позиция закрыта", "Sber");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogWithTG("Произошла ошибка при закрытии позиции\n" +
-                    ex.Message);
+                    ex.Message, "Sber");
             }
         }
         public abstract Task<bool> OpenPosition();

@@ -1,11 +1,10 @@
-﻿using MarketRobot.Interface;
-using MarketRobot.Interface.Logger;
+﻿using Confluent.Kafka;
 using Microsoft.Extensions.Options;
+using Providers.Interface.Kafka;
 using System.Threading;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using static Google.Rpc.Context.AttributeContext.Types;
 
 namespace MarketRobot.Telegram
 {
@@ -13,19 +12,17 @@ namespace MarketRobot.Telegram
     {
         private TelegramBotClient _client;
         private TelegramOptions _options;
-        private IMarketSberStrategy _strategySber;
-        private IMarketCNStrategy _strategyCN;
+        //private IMarketSberStrategy _strategySber;
+        //private IMarketCNStrategy _strategyCN;
         private ILogger _logger;
-
+        private IKafkaConsumerService _kafkaConsumerService;
         private long _userID = 1188835685;
 
-        public TelegramBot(IMarketSberStrategy strategySber, IMarketCNStrategy strategyCN, ILogger logger, IOptions<TelegramOptions> options)
+        public TelegramBot(IOptions<TelegramOptions> options, IKafkaConsumerService kafkaConsumerService)
         {
             _client = new TelegramBotClient(options.Value.TelegramKey);
             _options = options.Value;
-            _strategySber = strategySber;
-            _strategyCN = strategyCN;
-            _logger = logger;
+            _kafkaConsumerService = kafkaConsumerService;
         }
 
         public async void Start()
@@ -39,9 +36,10 @@ namespace MarketRobot.Telegram
                 receiverOptions: new() { AllowedUpdates = Array.Empty<UpdateType>() }
             );
 
-            _logger.Notify += async mes => await SendNotify(mes);
+            _kafkaConsumerService.MessageReceived += SendNotify;
+            //        _logger.Notify += async mes => await SendNotify(mes);
 
-            await SendNotify("Бот запущен");
+            SendNotify("Бот запущен");
         }
 
         private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
@@ -84,9 +82,9 @@ namespace MarketRobot.Telegram
         {
             try
             {
-                _strategySber.ClosePosition();
-                _strategyCN.ClosePosition();
-                await Sheduler.Sheduler.ShutDown();
+                //_strategySber.ClosePosition();
+                //_strategyCN.ClosePosition();
+                //await Sheduler.Sheduler.ShutDown();
                 return "Робот завершил работу";
             }
             catch (Exception ex)
@@ -96,18 +94,25 @@ namespace MarketRobot.Telegram
             }
         }
 
-        public async Task SendNotify(string mes)
+        public void SendNotify(object sender, KafkaMessageReceivedEventArgs mes)
         {
-            await _client.SendMessage(
+           _client.SendMessage(
                 chatId: _userID,
-                text: mes);
+                text: mes.Value);
+        }
+
+        public void SendNotify(string mes)
+        {
+            _client.SendMessage(
+                 chatId: _userID,
+                 text: mes);
         }
 
         public async Task<string> HealthCheck()
         {
-            return "Робот работает\n" +
-                "Баланс Сбер: " + await _strategySber.GetBalance() + "\n" +
-                "Баланс CNY: " + await _strategyCN.GetBalance() + "\n";
+            return "Робот работает\n";
+                //"Баланс Сбер: " + await _strategySber.GetBalance() + "\n" +
+                //"Баланс CNY: " + await _strategyCN.GetBalance() + "\n";
         }
     }
 }
